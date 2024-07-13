@@ -8,10 +8,16 @@ import (
 type TokenType int
 
 const (
-	LeftParen TokenType = iota
-	RightParen
-	LeftBrace
-	RightBrace
+	LEFT_PAREN TokenType = iota
+	RIGHT_PAREN
+	LEFT_BRACE
+	RIGHT_BRACE
+	COMMA
+	DOT
+	MINUS
+	PLUS
+	SEMICOLON
+	STAR
 	EOF
 )
 
@@ -21,8 +27,8 @@ type Token struct {
 }
 
 func (t TokenType) String() string {
-	tokenNames := []string{"LEFT_PAREN", "RIGHT_PAREN", "LEFT_BRACE", "RIGHT_BRACE", "EOF"}
-	if t < LeftParen || t > EOF {
+	tokenNames := []string{"LEFT_PAREN", "RIGHT_PAREN", "LEFT_BRACE", "RIGHT_BRACE", "COMMA", "DOT", "MINUS", "PLUS", "SEMICOLON", "STAR", "EOF"}
+	if t < LEFT_PAREN || t > EOF {
 		return "Unknown"
 	}
 	return tokenNames[t]
@@ -79,6 +85,36 @@ func main() {
 				t = Token{
 					Type:   TokenType(3),
 					Lexeme: "}",
+				}
+			case ",":
+				t = Token{
+					Type:   TokenType(4),
+					Lexeme: ",",
+				}
+			case ".":
+				t = Token{
+					Type:   TokenType(5),
+					Lexeme: ".",
+				}
+			case "-":
+				t = Token{
+					Type:   TokenType(6),
+					Lexeme: "-",
+				}
+			case "+":
+				t = Token{
+					Type:   TokenType(7),
+					Lexeme: "+",
+				}
+			case ";":
+				t = Token{
+					Type:   TokenType(8),
+					Lexeme: ";",
+				}
+			case "*":
+				t = Token{
+					Type:   TokenType(9),
+					Lexeme: "*",
 				}
 			}
 
