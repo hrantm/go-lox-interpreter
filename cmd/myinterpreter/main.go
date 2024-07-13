@@ -5,6 +5,27 @@ import (
 	"os"
 )
 
+type TokenType int
+
+const (
+	LeftParen TokenType = iota
+	RightParen
+	EOF
+)
+
+type Token struct {
+	Type   TokenType
+	Lexeme string
+}
+
+func (t TokenType) String() string {
+	tokenNames := []string{"LEFT_PAREN", "RIGHT_PAREN", "EOF"}
+	if t < LeftParen || t > EOF {
+		return "Unknown"
+	}
+	return tokenNames[t]
+}
+
 func main() {
 	// You can use print statements as follows for debugging, they'll be visible when running tests.
 	fmt.Fprintln(os.Stderr, "Logs from your program will appear here!")
@@ -31,7 +52,26 @@ func main() {
 	}
 
 	if len(fileContents) > 0 {
-		panic("Scanner not implemented")
+
+		for _, val := range fileContents {
+			char := string(val)
+			var t Token
+			switch char {
+			case "(":
+				t = Token{
+					Type:   TokenType(0),
+					Lexeme: "(",
+				}
+
+			case ")":
+				t = Token{
+					Type:   TokenType(1),
+					Lexeme: ")",
+				}
+			}
+			fmt.Println(t.Type.String(), t.Lexeme, "null")
+		}
+		fmt.Println("EOF  null")
 	} else {
 		fmt.Println("EOF  null") // Placeholder, remove this line when implementing the scanner
 	}
