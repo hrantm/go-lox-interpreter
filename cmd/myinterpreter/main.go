@@ -10,6 +10,8 @@ type TokenType int
 const (
 	LeftParen TokenType = iota
 	RightParen
+	LeftBrace
+	RightBrace
 	EOF
 )
 
@@ -19,7 +21,7 @@ type Token struct {
 }
 
 func (t TokenType) String() string {
-	tokenNames := []string{"LEFT_PAREN", "RIGHT_PAREN", "EOF"}
+	tokenNames := []string{"LEFT_PAREN", "RIGHT_PAREN", "LEFT_BRACE", "RIGHT_BRACE", "EOF"}
 	if t < LeftParen || t > EOF {
 		return "Unknown"
 	}
@@ -68,7 +70,18 @@ func main() {
 					Type:   TokenType(1),
 					Lexeme: ")",
 				}
+			case "{":
+				t = Token{
+					Type:   TokenType(2),
+					Lexeme: "{",
+				}
+			case "}":
+				t = Token{
+					Type:   TokenType(3),
+					Lexeme: "}",
+				}
 			}
+
 			fmt.Println(t.Type.String(), t.Lexeme, "null")
 		}
 		fmt.Println("EOF  null")
