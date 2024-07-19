@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
 	"os"
 )
@@ -36,7 +37,7 @@ func (t TokenType) String() string {
 
 func main() {
 	// You can use print statements as follows for debugging, they'll be visible when running tests.
-	fmt.Fprintln(os.Stderr, "Logs from your program will appear here!")
+	// fmt.Fprintln(os.Stderr, "Logs from your program will appear here!")
 
 	if len(os.Args) < 3 {
 		fmt.Fprintln(os.Stderr, "Usage: ./your_program.sh tokenize <filename>")
@@ -52,17 +53,39 @@ func main() {
 
 	// Uncomment this block to pass the first stage
 	//
+	// filename := os.Args[2]
+	// fileContents, err := os.ReadFile(filename)
+	// if err != nil {
+	// 	fmt.Fprintf(os.Stderr, "Error reading file: %v\n", err)
+	// 	os.Exit(1)
+	// }
 	filename := os.Args[2]
-	fileContents, err := os.ReadFile(filename)
+	file, err := os.Open(filename)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error reading file: %v\n", err)
 		os.Exit(1)
 	}
+	defer file.Close()
+	if err != nil {
+		fmt.Println("Error opening file:", err)
+		return
+	}
 
-	if len(fileContents) > 0 {
+	scanner := bufio.NewScanner(file)
+	const maxCapacity = 1024 * 1024 // 1 MB
+	buf := make([]byte, maxCapacity)
+	scanner.Buffer(buf, maxCapacity)
+	error := false
+	// if len(fileContents) > 0 {
+	for scanner.Scan() {
+		line := scanner.Text()
 
-		for _, val := range fileContents {
+		for _, val := range line {
+			// line_num := i + 1
+			line_num := 1
+			// fmt.Println(line_num, string(val))
 			char := string(val)
+
 			var t Token
 			switch char {
 			case "(":
@@ -116,12 +139,21 @@ func main() {
 					Type:   TokenType(9),
 					Lexeme: "*",
 				}
+			default:
+				error = true
+				message := fmt.Sprintf("[line %v] Error: Unexpected character: %v", line_num, char)
+
+				fmt.Fprintln(os.Stderr, message)
+			}
+			if t.Lexeme != "" {
+				fmt.Fprintln(os.Stdout, t.Type.String(), t.Lexeme, "null")
 			}
 
-			fmt.Println(t.Type.String(), t.Lexeme, "null")
 		}
-		fmt.Println("EOF  null")
-	} else {
-		fmt.Println("EOF  null") // Placeholder, remove this line when implementing the scanner
 	}
+	fmt.Println("EOF  null")
+	if error {
+		os.Exit(65)
+	}
+
 }
