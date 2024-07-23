@@ -24,6 +24,10 @@ const (
 	EQUAL_EQUAL
 	BANG
 	BANG_EQUAL
+	LESS
+	LESS_EQUAL
+	GREATER
+	GREATER_EQUAL
 	EOF
 )
 
@@ -33,7 +37,7 @@ type Token struct {
 }
 
 func (t TokenType) String() string {
-	tokenNames := []string{"UNKNOWN", "LEFT_PAREN", "RIGHT_PAREN", "LEFT_BRACE", "RIGHT_BRACE", "COMMA", "DOT", "MINUS", "PLUS", "SEMICOLON", "STAR", "EQUAL", "EQUAL_EQUAL", "BANG", "BANG_EQUAL", "EOF"}
+	tokenNames := []string{"UNKNOWN", "LEFT_PAREN", "RIGHT_PAREN", "LEFT_BRACE", "RIGHT_BRACE", "COMMA", "DOT", "MINUS", "PLUS", "SEMICOLON", "STAR", "EQUAL", "EQUAL_EQUAL", "BANG", "BANG_EQUAL", "LESS", "LESS_EQUAL", "GREATER", "GREATER_EQUAL", "EOF"}
 	if t < LEFT_PAREN || t > EOF {
 		return "Unknown"
 	}
@@ -113,6 +117,28 @@ func main() {
 					t = Token{
 						Type:   TokenType(14),
 						Lexeme: "!=",
+					}
+					skipNext++
+				}
+			}
+
+			if t.Type == 15 && i+1 < len(line) {
+				nextTok := getToken(rune(line[i+1]))
+				if nextTok.Type == 11 {
+					t = Token{
+						Type:   TokenType(16),
+						Lexeme: "<=",
+					}
+					skipNext++
+				}
+			}
+
+			if t.Type == 17 && i+1 < len(line) {
+				nextTok := getToken(rune(line[i+1]))
+				if nextTok.Type == 11 {
+					t = Token{
+						Type:   TokenType(18),
+						Lexeme: ">=",
 					}
 					skipNext++
 				}
@@ -200,6 +226,16 @@ func getToken(c rune) Token {
 		t = Token{
 			Type:   TokenType(13),
 			Lexeme: "!",
+		}
+	case '<':
+		t = Token{
+			Type:   TokenType(15),
+			Lexeme: "<",
+		}
+	case '>':
+		t = Token{
+			Type:   TokenType(17),
+			Lexeme: ">",
 		}
 	}
 
