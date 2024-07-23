@@ -82,12 +82,28 @@ func main() {
 	// // if len(fileContents) > 0 {
 	line_num := 1
 	error := false
+
 	for scanner.Scan() {
 		line := scanner.Text()
 		var t Token
-		for _, val := range line {
+		skipNext := 0
+		for i, val := range line {
+			if skipNext > 0 {
+				skipNext--
+				continue
+			}
 			t = getToken(val)
 
+			if t.Type == 11 && i+1 < len(line) {
+				nextTok := getToken(rune(line[i+1]))
+				if nextTok.Type == 11 {
+					t = Token{
+						Type:   TokenType(12),
+						Lexeme: "==",
+					}
+					skipNext++
+				}
+			}
 			if t.Type != 0 {
 				fmt.Fprintln(os.Stdout, t.Type.String(), t.Lexeme, "null")
 			} else {
