@@ -63,14 +63,6 @@ func main() {
 		os.Exit(1)
 	}
 
-	// Uncomment this block to pass the first stage
-	//
-	// filename := os.Args[2]
-	// fileContents, err := os.ReadFile(filename)
-	// if err != nil {
-	// 	fmt.Fprintf(os.Stderr, "Error reading file: %v\n", err)
-	// 	os.Exit(1)
-	// }
 	filename := os.Args[2]
 	file, err := os.Open(filename)
 	if err != nil {
@@ -87,8 +79,7 @@ func main() {
 	const maxCapacity = 1024 * 1024 // 1 MB
 	buf := make([]byte, maxCapacity)
 	scanner.Buffer(buf, maxCapacity)
-	// error := false
-	// // if len(fileContents) > 0 {
+
 	line_num := 1
 	error := false
 
