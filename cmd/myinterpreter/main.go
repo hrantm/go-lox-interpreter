@@ -28,6 +28,7 @@ const (
 	LESS_EQUAL
 	GREATER
 	GREATER_EQUAL
+	SLASH
 	EOF
 )
 
@@ -37,7 +38,7 @@ type Token struct {
 }
 
 func (t TokenType) String() string {
-	tokenNames := []string{"UNKNOWN", "LEFT_PAREN", "RIGHT_PAREN", "LEFT_BRACE", "RIGHT_BRACE", "COMMA", "DOT", "MINUS", "PLUS", "SEMICOLON", "STAR", "EQUAL", "EQUAL_EQUAL", "BANG", "BANG_EQUAL", "LESS", "LESS_EQUAL", "GREATER", "GREATER_EQUAL", "EOF"}
+	tokenNames := []string{"UNKNOWN", "LEFT_PAREN", "RIGHT_PAREN", "LEFT_BRACE", "RIGHT_BRACE", "COMMA", "DOT", "MINUS", "PLUS", "SEMICOLON", "STAR", "EQUAL", "EQUAL_EQUAL", "BANG", "BANG_EQUAL", "LESS", "LESS_EQUAL", "GREATER", "GREATER_EQUAL", "SLASH", "EOF"}
 	if t < LEFT_PAREN || t > EOF {
 		return "Unknown"
 	}
@@ -144,6 +145,13 @@ func main() {
 				}
 			}
 
+			if t.Type == 19 && i+1 < len(line) {
+				nextTok := getToken(rune(line[i+1]))
+				if nextTok.Type == 19 {
+					break
+				}
+			}
+
 			if t.Type != 0 {
 				fmt.Fprintln(os.Stdout, t.Type.String(), t.Lexeme, "null")
 			} else {
@@ -236,6 +244,11 @@ func getToken(c rune) Token {
 		t = Token{
 			Type:   TokenType(17),
 			Lexeme: ">",
+		}
+	case '/':
+		t = Token{
+			Type:   TokenType(19),
+			Lexeme: "/",
 		}
 	}
 
