@@ -82,12 +82,31 @@ func main() {
 
 	line_num := 1
 	error := false
-
+	currentString := ""
+	stringOpened := false
+	lineOpened := 0
 	for scanner.Scan() {
 		line := scanner.Text()
 		var t Token
 		skipNext := 0
+
 		for i, val := range line {
+			if val == '"' && stringOpened {
+				fmt.Printf("STRING \"%v\" %v\n", currentString, currentString)
+				stringOpened = false
+				currentString = ""
+				continue
+			}
+			if stringOpened {
+				currentString += string(val)
+				continue
+			}
+			if val == '"' && !stringOpened {
+				stringOpened = true
+				lineOpened = line_num
+				continue
+			}
+
 			if skipNext > 0 {
 				skipNext--
 				continue
@@ -165,6 +184,13 @@ func main() {
 		}
 		line_num++
 	}
+	if stringOpened {
+		error = true
+		message := fmt.Sprintf("[line %v] Error: Unterminated string.", lineOpened)
+
+		fmt.Fprintln(os.Stderr, message)
+	}
+
 	fmt.Println("EOF  null")
 	if error {
 		os.Exit(65)
@@ -261,7 +287,6 @@ func getToken(c rune) Token {
 			Type:   TokenType(21),
 			Lexeme: "<|TAB|>",
 		}
-
 	}
 
 	return t
